@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const app =  express();
-const port = process.env.PORT || 5900;
+const port = process.env.PORT || 5000;
 
 // middlewares
 app.use(cors());
@@ -28,6 +28,20 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // এটা আমরা node mongodb crud থেকে নিছি 12, 13 লাইন
+    // usage examples> Insert Operations> Insert a Document
+    const database = client.db("usersDB");
+    const userCollection = database.collection("users");
+
+    app.post('/users', async(req,res) => {
+      const user = req.body;
+      console.log('new user', user)
+ // এটা আমরা node mongodb crud থেকে নিছি ২১ লাইন
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
